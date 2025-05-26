@@ -1,0 +1,24 @@
+{
+  "name": "@thesusheer/node-miniaudio",
+  "version": "1.0.0",
+  "private": false,
+  "description": "Lightweight and fast Node.js addon for playing notification sounds, beeps, and alarms using MiniAudio.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+   "keywords": [
+    "nodejs",
+    "miniaudio",
+    "audio",
+    "sound",
+    "beep",
+    "notification",
+    "alarm",
+    "low-latency",
+    "cross-platform",
+    "embedded"
+  ],
+  "author": "sudheer gupta",
+  "license": "MIT"
+}
