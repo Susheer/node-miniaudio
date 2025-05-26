@@ -1,0 +1,20 @@
+# Ignore build files and compiled addons
+build/
+node_modules/
+*.node
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Ignore debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore compiled output wav file (if necessary)
+output.wav
