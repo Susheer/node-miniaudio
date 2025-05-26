@@ -10,17 +10,26 @@
       "dependencies": [ "<(module_name)" ],
       "copies": [
         {
-          "files": [ "<(PRODUCT_DIR)/<(module_name).node" ],
+          "files": [ "<(PRODUCT_DIR)/<(module_name).node", "<(PRODUCT_DIR)/output.wav" ],
           "destination": "<(module_path)"
         }
       ]
       },
         {
         'target_name': '<(module_name)',
-        "sources": ["miniaudio.cpp"],
+        "sources": ["node-miniaudio.cpp"],
         'include_dirs': ["<!@(node -p \"require('node-addon-api').include\")"],
         'dependencies': ["<!(node -p \"require('node-addon-api').gyp\")"],
-        "defines": ["MINIAUDIO_IMPLEMENTATION"],
+        "copies": [
+        {
+        "files": ["output.wav"],
+         "destination": "<(PRODUCT_DIR)"
+        },
+         {
+        "files": ["output.wav"],
+        "destination": "<(module_path)"
+        }
+        ],
         'msvs_settings': {
         'VCCLCompilerTool': { 'ExceptionHandling': 1 },
        }
