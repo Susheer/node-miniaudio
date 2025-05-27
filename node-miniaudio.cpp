@@ -8,6 +8,18 @@
 #include <direct.h> // Windows-specific header for _getcwd
 
 ma_engine engine;
+
+void CheckSoundCompletion(Napi::Env env, Napi::Function callback, ma_sound* sound) {
+    std::thread([env, callback, sound]() {
+        while (ma_sound_is_playing(sound)) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        callback.Call({Napi::String::New(env, "Audio finished playing!")});
+        ma_sound_uninit(sound);
+        ma_engine_uninit(&engine);
+    }).detach();
+}
+
 Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
     if (info.Length() < 1 || !info[0].IsString()) {
