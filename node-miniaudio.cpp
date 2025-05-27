@@ -24,6 +24,7 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
 
     if (info.Length() < 2 || !info[0].IsString() || !info[1].IsFunction()) {
+        std::cout << "Invalid arguments! Provide a file path and a callback function." << std::endl;
         return Napi::String::New(env, "Invalid arguments! Provide a file path and a callback function.");
     }
 
