@@ -51,11 +51,11 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
         return env.Null();
     }
 
-    Napi::Function callback = info[1].As<Napi::Function>(); 
-
+    Napi::Function callback = info[1].As<Napi::Function>();
+    // Initialize engine 
     if (ma_engine_init(NULL, &engine) != MA_SUCCESS) {
-        std::cout << "Failed to initialize MiniAudio engine!" << std::endl;
-        return Napi::String::New(env, "Failed to initialize MiniAudio engine!");
+        Napi::Error::New(env, "Failed to initialize MiniAudio engine!").ThrowAsJavaScriptException();
+        return env.Null();
     }
     
 
@@ -65,7 +65,7 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
 
     ma_sound sound;
     ma_result result;
-
+    // Initialize sound
     result = ma_sound_init_from_file(&engine, filePath.c_str(), 0, NULL, NULL, &sound);
     if (result != MA_SUCCESS) {
         std::cout << "Sound initialization failed: " << result << std::endl;
