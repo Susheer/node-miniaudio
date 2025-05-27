@@ -38,7 +38,7 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     */
 
     ma_sound sound;
-    ma_result result; /* = ma_engine_play_sound(&engine, filePath.c_str(), NULL);*/
+    ma_result result;
 
     result = ma_sound_init_from_file(&engine, filePath.c_str(), 0, NULL, NULL, &sound);
     std::cout << "Ma Result " << result << std::endl;
@@ -47,7 +47,6 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
         return Napi::String::New(env, "Sound initialization failed: ");
     }
     ma_sound_start(&sound);
-
     // Wait until the sound finishes playing
     while (ma_sound_is_playing(&sound)) {
       std::this_thread::sleep_for(std::chrono::milliseconds(80));
