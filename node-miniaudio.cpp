@@ -42,10 +42,15 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     std::ifstream file(filePath);
     if (!file) {
       Napi::Error::New(env, "No audio file present at the location!").ThrowAsJavaScriptException();
-      return env.Null(); // Ensure function returns a valid value
+      return env.Null();
     }
 
-    
+    // Check if second argument is a function (callback)
+    if (!info[1].IsFunction()) {
+        Napi::Error::New(env, "Error: Second argument must be a function (callback to handle completion).").ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
     Napi::Function callback = info[1].As<Napi::Function>(); 
 
     if (ma_engine_init(NULL, &engine) != MA_SUCCESS) {
