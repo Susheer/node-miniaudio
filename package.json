@@ -4,6 +4,7 @@
   "private": false,
   "description": "Lightweight and fast Node.js addon for playing notification sounds, beeps, and alarms using MiniAudio.",
   "main": "./lib/index.js",
+  "types": "types/index.d.ts",
   "homepage": "https://github.com/Susheer/node-miniaudio",
   "scripts": {
     "install": "prebuild-install || node-gyp rebuild",
@@ -11,6 +12,7 @@
     "prepublishOnly": "grunt release",
     "test": "node --test test/"
   },
+  "gypfile": false,
   "dependencies": {
     "node-addon-api": "^8.1.0"
   },
@@ -24,6 +26,19 @@
     "node-pre-gyp": "^0.17.0",
     "node-pre-gyp-github": "github:Susheer/node-pre-gyp-github"
   },
+  "contributors": [
+    "Sudheer Gupta <sudheergupta0508@gmail.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Susheer/electron-printer.git"
+  },
+  "binary": {
+    "module_name": "node-miniaudio",
+    "module_path": "./lib/",
+    "host": "https://github.com/Susheer/node-miniaudio/releases/download/",
+    "remote_path": "v{version}"
+  },
   "keywords": [
     "nodejs",
     "miniaudio",
@@ -36,6 +51,14 @@
     "cross-platform",
     "embedded"
   ],
-  "author": "sudheer gupta",
-  "license": "MIT"
+  "author": {
+    "name": "Sudheer gupta",
+    "url": "https://github.com/Susheer",
+    "email": "sudheergupta0508@gmail.com"
+  },
+  "licenses": [
+    {
+      "type": "BSD"
+    }
+  ]
 }
