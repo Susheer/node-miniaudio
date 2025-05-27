@@ -9,17 +9,6 @@
 
 ma_engine engine;
 
-void CheckSoundCompletion(Napi::Env env, Napi::Function callback, ma_sound* sound) {
-    std::thread([env, callback, sound]() {
-        while (ma_sound_is_playing(sound)) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-        callback.Call({Napi::String::New(env, "Audio finished playing!")});
-        ma_sound_uninit(sound);
-        ma_engine_uninit(&engine);
-    }).detach();
-}
-
 Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
 
@@ -77,9 +66,19 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
      * */ 
 
     // Start sound playback
+    std::cout <<  "Start sound playback" << result << std::endl;
+     // Start sound playback
     ma_sound_start(&sound);
+
     // Start a separate thread to monitor playback and trigger callback
-    CheckSoundCompletion(env, callback, &sound);
+    // Handle playback completion asynchronously
+    while (ma_sound_is_playing(&sound)) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(40));
+        }
+        ma_sound_uninit(&sound);
+        ma_engine_uninit(&engine);
+    callback.Call({Napi::String::New(env, "Audio finished playing!")});
+
     return Napi::String::New(env, "Playing: " + filePath);
 }
 
