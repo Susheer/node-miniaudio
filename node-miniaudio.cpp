@@ -34,7 +34,10 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
         std::cout << "Failed to initialize MiniAudio engine!" << std::endl;
         return Napi::String::New(env, "Failed to initialize MiniAudio engine!");
     }
-
+    
+    /**
+     * Ensure the audio file present at the location provided
+     */
     std::ifstream file(filePath);
     if (!file) {
     std::cout << "Warning: output.wav not found!" << std::endl;
