@@ -45,8 +45,6 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     if (result != MA_SUCCESS) {
         std::cout << "Sound initialization failed: " << result << std::endl;
         return Napi::String::New(env, "Sound initialization failed: ");
-    } else {
-        std::cout << "Audio playing successfully!" << std::endl;
     }
 
     std::cout << "-----Uninit engine------" << std::endl;
