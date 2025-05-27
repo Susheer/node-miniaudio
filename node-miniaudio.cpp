@@ -28,6 +28,7 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     }
 
     std::string filePath = info[0].As<Napi::String>().Utf8Value();
+    Napi::Function callback = info[1].As<Napi::Function>(); 
 
     if (ma_engine_init(NULL, &engine) != MA_SUCCESS) {
         std::cout << "Failed to initialize MiniAudio engine!" << std::endl;
