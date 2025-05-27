@@ -1,8 +1,8 @@
-const audioAddon = require('./lib/node-miniaudio.node');
+const audioAddon = require('./lib');
 const path = require('path');
-const filePath = path.join(__dirname, "output.wav");
+const filePath = path.join(__dirname, 'test', "output.wav");
 
 
 audioAddon.playAudio(filePath, function (response) {
-    console.log("miniaudio: ", response);
+    console.log("miniaudio", response);
 });
