@@ -52,9 +52,11 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     while (ma_sound_is_playing(&sound)) {
       std::this_thread::sleep_for(std::chrono::milliseconds(80));
     }
-   
+    
     std::cout <<  "Audio finished playing!" << std::endl;
-    ma_engine_uninit(&engine);
+    // Cleanup
+    ma_sound_uninit(&sound);
+    ma_engine_uninit(&engine); // ✅ Uninitialize the engine
     return Napi::String::New(env, "Playing: " + filePath);
 }
 
