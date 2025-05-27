@@ -17,7 +17,7 @@
     },
     {
       "target_name": "<(module_name)",
-      "sources": ["node-miniaudio.cpp"],
+      "sources": ["node_miniaudio.cpp"],
       "include_dirs": ["<!@(node -p \"require('node-addon-api').include\")"],
       "dependencies": ["<!(node -p \"require('node-addon-api').gyp\")"],
       "msvs_settings": {
