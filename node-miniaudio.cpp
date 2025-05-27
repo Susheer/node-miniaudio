@@ -45,11 +45,6 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
         std::cout << "Found output.wav! Attempting to play..." << std::endl;
     }
 
-    char cwd[1024];
-    if (getcwd(cwd, sizeof(cwd)) != NULL) {
-        std::cout << "Current working directory: " << cwd << std::endl;
-    }
-
     /*
     *  A more flexible way of playing a sound is to first initialize a sound:
     */
