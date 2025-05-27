@@ -35,7 +35,17 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
         return env.Null();
     }
 
+    /**
+     * Ensure the audio file present at the location provided
+     */
     std::string filePath = info[0].As<Napi::String>().Utf8Value();
+    std::ifstream file(filePath);
+    if (!file) {
+      Napi::Error::New(env, "No audio file present at the location!").ThrowAsJavaScriptException();
+      return env.Null(); // Ensure function returns a valid value
+    }
+
+    
     Napi::Function callback = info[1].As<Napi::Function>(); 
 
     if (ma_engine_init(NULL, &engine) != MA_SUCCESS) {
@@ -43,15 +53,6 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
         return Napi::String::New(env, "Failed to initialize MiniAudio engine!");
     }
     
-    /**
-     * Ensure the audio file present at the location provided
-     */
-    std::ifstream file(filePath);
-    if (!file) {
-    std::cout << "Warning: output.wav not found!" << std::endl;
-    } else {
-        std::cout << "Found output.wav! Attempting to play..." << std::endl;
-    }
 
     /*
     *  A more flexible way of playing a sound is to first initialize a sound:
