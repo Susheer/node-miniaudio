@@ -47,11 +47,14 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
         return Napi::String::New(env, "Sound initialization failed: ");
     }
     ma_sound_start(&sound);
-    
-    std::cout << "-----Uninit engine------" << std::endl;
-    Sleep(100); // Sleep for 3000 milliseconds (3 secon
-    ma_engine_uninit(&engine);
 
+    // Wait until the sound finishes playing
+    while (ma_sound_is_playing(&sound)) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(80));
+    }
+   
+    std::cout <<  "Audio finished playing!" << std::endl;
+    ma_engine_uninit(&engine);
     return Napi::String::New(env, "Playing: " + filePath);
 }
 
