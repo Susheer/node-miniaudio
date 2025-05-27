@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <windows.h>
+#include <thread> // For non-blocking execution
 #include <direct.h> // Windows-specific header for _getcwd
 
 ma_engine engine;
