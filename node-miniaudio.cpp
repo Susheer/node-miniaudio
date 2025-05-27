@@ -4,80 +4,71 @@
 #include <fstream>
 #include <iostream>
 #include <windows.h>
-#include <thread> // For non-blocking execution
-#include <direct.h> // Windows-specific header for _getcwd
+#include <thread>
 
 ma_engine engine;
 
 Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
 
-    // Check argument count
-    if (info.Length() < 2) {
-        Napi::Error::New(env, "Error: Expected 2 arguments (file path, callback function).").ThrowAsJavaScriptException();
-        return env.Null(); // Ensure function returns a valid value
-    }
-
-    // Check if first argument is a string (file path)
-    if (!info[0].IsString()) {
-        Napi::Error::New(env, "Error: First argument must be a string (file path to audio).").ThrowAsJavaScriptException();
+    // Validate parameters
+    if (info.Length() < 2 || !info[0].IsString() || !info[1].IsFunction()) {
+        Napi::Error::New(env, "Error: Expected a file path (string) and a callback function.").ThrowAsJavaScriptException();
         return env.Null();
     }
 
-    /**
-     * Ensure the audio file present at the location provided
-     */
     std::string filePath = info[0].As<Napi::String>().Utf8Value();
-    std::ifstream file(filePath);
-    if (!file) {
-      Napi::Error::New(env, "No audio file present at the location!").ThrowAsJavaScriptException();
-      return env.Null();
-    }
+    Napi::Function callback = info[1].As<Napi::Function>();
 
-    // Check if second argument is a function (callback)
-    if (!info[1].IsFunction()) {
-        Napi::Error::New(env, "Error: Second argument must be a function (callback to handle completion).").ThrowAsJavaScriptException();
+    // Ensure the audio file exists
+    if (!std::ifstream(filePath)) {
+        Napi::Error::New(env, "Error: Audio file not found at path: " + filePath).ThrowAsJavaScriptException();
         return env.Null();
     }
 
-    Napi::Function callback = info[1].As<Napi::Function>();
-    // Initialize engine 
+    // Initialize MiniAudio engine
     if (ma_engine_init(NULL, &engine) != MA_SUCCESS) {
         Napi::Error::New(env, "Failed to initialize MiniAudio engine!").ThrowAsJavaScriptException();
         return env.Null();
     }
-    
 
-    /*
-    *  A more flexible way of playing a sound is to first initialize a sound:
-    */
-
-    ma_sound sound;
-    ma_result result;
     // Initialize sound
-    result = ma_sound_init_from_file(&engine, filePath.c_str(), 0, NULL, NULL, &sound);
-    if (result != MA_SUCCESS) {
-        Napi::Error::New(env, "Sound initialization failed").ThrowAsJavaScriptException();
+    ma_sound sound;
+    if (ma_sound_init_from_file(&engine, filePath.c_str(), 0, NULL, NULL, &sound) != MA_SUCCESS) {
+        Napi::Error::New(env, "Sound initialization failed.").ThrowAsJavaScriptException();
+        ma_engine_uninit(&engine); // Ensure engine is cleaned up on failure
         return env.Null();
     }
 
-    /*** 
-     * Sounds are not started by default. Start a sound with `ma_sound_start()` 
-     * */ 
-
     // Start sound playback
-    std::cout <<  "Start sound playback" << result << std::endl;
-     // Start sound playback
-    ma_sound_start(&sound);
+    if (ma_sound_start(&sound) != MA_SUCCESS) {
+        Napi::Error::New(env, "Error: Failed to start sound playback!").ThrowAsJavaScriptException();
+        ma_sound_uninit(&sound); // Cleanup sound if playback fails
+        ma_engine_uninit(&engine);
+        return env.Null();
+    }
 
-    // Start a separate thread to monitor playback and trigger callback
+    // Create ThreadSafeFunction for callback execution within Node.js event loop
+    Napi::ThreadSafeFunction tsfn = Napi::ThreadSafeFunction::New(
+        env, callback, "Audio Playback Callback", 0, 1, [](Napi::Env) {});
+
     // Handle playback completion asynchronously
-    while (ma_sound_is_playing(&sound)) {
+    std::thread([tsfn, &sound]() {
+        while (ma_sound_is_playing(&sound)) {
             std::this_thread::sleep_for(std::chrono::milliseconds(40));
         }
+
+        tsfn.BlockingCall([](Napi::Env env, Napi::Function callback) {
+            callback.Call({Napi::String::New(env, "Audio finished playing!")});
+        });
+
+        // Cleanup resources
         ma_sound_uninit(&sound);
         ma_engine_uninit(&engine);
-    callback.Call({Napi::String::New(env, "Audio finished playing!")});
+
+        // Release the ThreadSafeFunction
+        tsfn.Release();
+    }).detach();
 
     return Napi::String::New(env, "Playing: " + filePath);
 }
