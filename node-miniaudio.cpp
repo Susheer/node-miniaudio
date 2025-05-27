@@ -61,17 +61,9 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     /** 
      * Sounds are not started by default. Start a sound with `ma_sound_start()` 
      * */ 
-   
     ma_sound_start(&sound);
-    // Wait until the sound finishes playing
-    while (ma_sound_is_playing(&sound)) {
-      std::this_thread::sleep_for(std::chrono::milliseconds(80));
-    }
-    
-    std::cout <<  "Audio finished playing!" << std::endl;
-    // Cleanup
-    ma_sound_uninit(&sound);
-    ma_engine_uninit(&engine); // ✅ Uninitialize the engine
+    // Start a separate thread to monitor playback and trigger callback
+    CheckSoundCompletion(env, callback, &sound);
     return Napi::String::New(env, "Playing: " + filePath);
 }
 
