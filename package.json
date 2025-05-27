@@ -8,11 +8,9 @@
     "install": "prebuild-install || node-gyp rebuild",
     "rebuild": "node-gyp rebuild",
     "prepublishOnly": "grunt release",
-    "electron-rebuild": "node-gyp rebuild --target_platform=win32 --target_arch=x64  --runtime=electron --target=32.2.0 --dist-url=https://electronjs.org/headers",
     "test": "node --test test/"
   },
-    "dependencies": {
-    "naudiodon": "^2.3.6",
+  "dependencies": {
     "node-addon-api": "^8.1.0"
   },
   "devDependencies": {
@@ -21,10 +19,11 @@
     "grunt-contrib-jshint": "^3.2.0",
     "grunt-node-gyp": "^5.0.0",
     "grunt-shell": "^4.0.0",
+    "node-gyp": "^11.2.0",
     "node-pre-gyp": "^0.17.0",
     "node-pre-gyp-github": "github:Susheer/node-pre-gyp-github"
   },
-   "keywords": [
+  "keywords": [
     "nodejs",
     "miniaudio",
     "audio",
