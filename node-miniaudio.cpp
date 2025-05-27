@@ -3,6 +3,7 @@
 #include <napi.h>
 #include <fstream>
 #include <iostream>
+#include <windows.h>
 #include <direct.h> // Windows-specific header for _getcwd
 
 
@@ -33,15 +34,15 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
         std::cout << "Current working directory: " << cwd << std::endl;
     }
     
-    std::thread audioThread([](){
-    ma_engine engine;
-    ma_engine_init(NULL, &engine);
-    ma_engine_play_sound(&engine, "output.wav", NULL);
-    std::this_thread::sleep_for(std::chrono::seconds(10)); 
-    ma_engine_uninit(&engine);
-});
+//     std::thread audioThread([](){
+//     ma_engine engine;
+//     ma_engine_init(NULL, &engine);
+//     ma_engine_play_sound(&engine, "output.wav", NULL);
+//     std::this_thread::sleep_for(std::chrono::seconds(10)); 
+//     ma_engine_uninit(&engine);
+// });
 
-audioThread.join();
+//audioThread.join();
 
 
 
@@ -55,7 +56,8 @@ audioThread.join();
     }
 
     std::cout << "-----Uninit engine------" << std::endl;
-    //ma_engine_uninit(&engine);
+    Sleep(5000); // Sleep for 3000 milliseconds (3 secon
+    ma_engine_uninit(&engine);
 
     return Napi::String::New(env, "Playing: " + filePath);
 }
