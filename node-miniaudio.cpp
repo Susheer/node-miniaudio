@@ -22,8 +22,9 @@ void CheckSoundCompletion(Napi::Env env, Napi::Function callback, ma_sound* soun
 
 Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
-    if (info.Length() < 1 || !info[0].IsString()) {
-        return Napi::String::New(env, "Invalid argument! Please provide a file path.");
+
+    if (info.Length() < 2 || !info[0].IsString() || !info[1].IsFunction) {
+        return Napi::String::New(env, "Invalid arguments! Provide a file path and a callback function.");
     }
 
     std::string filePath = info[0].As<Napi::String>().Utf8Value();
