@@ -68,8 +68,8 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     // Initialize sound
     result = ma_sound_init_from_file(&engine, filePath.c_str(), 0, NULL, NULL, &sound);
     if (result != MA_SUCCESS) {
-        std::cout << "Sound initialization failed: " << result << std::endl;
-        return Napi::String::New(env, "Sound initialization failed: ");
+        Napi::Error::New(env, "Sound initialization failed").ThrowAsJavaScriptException();
+        return env.Null();
     }
 
     /** 
