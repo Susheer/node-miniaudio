@@ -23,9 +23,10 @@ void CheckSoundCompletion(Napi::Env env, Napi::Function callback, ma_sound* soun
 Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
 
-    if (info.Length() < 2 || !info[0].IsString() || !info[1].IsFunction()) {
-        std::cout << "Invalid arguments! Provide a file path and a callback function." << std::endl;
-        return Napi::String::New(env, "Invalid arguments! Provide a file path and a callback function.");
+    // Check argument count
+    if (info.Length() < 2) {
+        Napi::Error::New(env, "Error: Expected 2 arguments (file path, callback function).").ThrowAsJavaScriptException();
+        return env.Null(); // Ensure function returns a valid value
     }
 
     std::string filePath = info[0].As<Napi::String>().Utf8Value();
