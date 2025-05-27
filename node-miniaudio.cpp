@@ -29,6 +29,12 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
         return env.Null(); // Ensure function returns a valid value
     }
 
+    // Check if first argument is a string (file path)
+    if (!info[0].IsString()) {
+        Napi::Error::New(env, "Error: First argument must be a string (file path to audio).").ThrowAsJavaScriptException();
+        return env.Null();
+    }
+
     std::string filePath = info[0].As<Napi::String>().Utf8Value();
     Napi::Function callback = info[1].As<Napi::Function>(); 
 
