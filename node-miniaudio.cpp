@@ -6,11 +6,10 @@
 #include <windows.h>
 #include <direct.h> // Windows-specific header for _getcwd
 
-
+ma_engine engine;
 Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
     std::cout << "-------------PlayAudio invoked -----------" << std::endl;
-    ma_engine engine;
     if (info.Length() < 1 || !info[0].IsString()) {
         return Napi::String::New(env, "Invalid argument! Please provide a file path.");
     }
@@ -33,30 +32,25 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
         std::cout << "Current working directory: " << cwd << std::endl;
     }
-    
-//     std::thread audioThread([](){
-//     ma_engine engine;
-//     ma_engine_init(NULL, &engine);
-//     ma_engine_play_sound(&engine, "output.wav", NULL);
-//     std::this_thread::sleep_for(std::chrono::seconds(10)); 
-//     ma_engine_uninit(&engine);
-// });
 
-//audioThread.join();
+    /*
+    *  A more flexible way of playing a sound is to first initialize a sound:
+    */
 
+    ma_sound sound;
+    ma_result result; /* = ma_engine_play_sound(&engine, filePath.c_str(), NULL);*/
 
-
-    ma_result result = ma_engine_play_sound(&engine, filePath.c_str(), NULL);
-     std::cout << "Ma Result " << result << std::endl;
+    result = ma_sound_init_from_file(&engine, filePath.c_str(), 0, NULL, NULL, &sound);
+    std::cout << "Ma Result " << result << std::endl;
     if (result != MA_SUCCESS) {
-        std::cout << "Error playing sound: " << result << std::endl;
-        return Napi::String::New(env, "Error playing sound:");
+        std::cout << "Sound initialization failed: " << result << std::endl;
+        return Napi::String::New(env, "Sound initialization failed: ");
     } else {
         std::cout << "Audio playing successfully!" << std::endl;
     }
 
     std::cout << "-----Uninit engine------" << std::endl;
-    Sleep(5000); // Sleep for 3000 milliseconds (3 secon
+    Sleep(100); // Sleep for 3000 milliseconds (3 secon
     ma_engine_uninit(&engine);
 
     return Napi::String::New(env, "Playing: " + filePath);
