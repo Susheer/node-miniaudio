@@ -9,7 +9,6 @@
 ma_engine engine;
 Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
-    std::cout << "-------------PlayAudio invoked -----------" << std::endl;
     if (info.Length() < 1 || !info[0].IsString()) {
         return Napi::String::New(env, "Invalid argument! Please provide a file path.");
     }
@@ -46,6 +45,11 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
         std::cout << "Sound initialization failed: " << result << std::endl;
         return Napi::String::New(env, "Sound initialization failed: ");
     }
+
+    /** 
+     * Sounds are not started by default. Start a sound with `ma_sound_start()` 
+     * */ 
+   
     ma_sound_start(&sound);
     // Wait until the sound finishes playing
     while (ma_sound_is_playing(&sound)) {
