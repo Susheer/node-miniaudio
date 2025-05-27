@@ -53,7 +53,6 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
     ma_result result;
 
     result = ma_sound_init_from_file(&engine, filePath.c_str(), 0, NULL, NULL, &sound);
-    std::cout << "Ma Result " << result << std::endl;
     if (result != MA_SUCCESS) {
         std::cout << "Sound initialization failed: " << result << std::endl;
         return Napi::String::New(env, "Sound initialization failed: ");
