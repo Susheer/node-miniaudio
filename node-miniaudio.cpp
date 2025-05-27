@@ -72,9 +72,11 @@ Napi::Value PlayAudio(const Napi::CallbackInfo& info) {
         return env.Null();
     }
 
-    /** 
+    /*** 
      * Sounds are not started by default. Start a sound with `ma_sound_start()` 
      * */ 
+
+    // Start sound playback
     ma_sound_start(&sound);
     // Start a separate thread to monitor playback and trigger callback
     CheckSoundCompletion(env, callback, &sound);
