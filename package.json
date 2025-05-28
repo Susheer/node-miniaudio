@@ -1,6 +1,6 @@
 {
   "name": "@thesusheer/node-miniaudio",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "description": "Lightweight and fast Node.js addon for playing notification sounds, beeps, and alarms using MiniAudio.",
   "main": "./lib/index.js",
@@ -9,7 +9,7 @@
   "scripts": {
     "install": "prebuild-install || node-gyp rebuild",
     "rebuild": "node-gyp rebuild",
-    "prepublishOnly": "grunt release",
+    "npm-publish":"npm publish",
     "test": "node --test test/"
   },
   "gypfile": false,

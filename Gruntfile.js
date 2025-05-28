@@ -8,7 +8,7 @@ module.exports = function(grunt) {
                 command: 'node-pre-gyp configure build package --target_arch=x64'
             },
             'upload-binaries': {
-                command: 'node-pre-gyp-github publish'
+                command: 'node-pre-gyp-github publish --release --commitish main'
             }
         },
         copy: {
